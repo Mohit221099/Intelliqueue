@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
@@ -8,9 +8,9 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
-import { Lock, Mail, Loader2 } from "lucide-react";
+import { Lock, Mail, Loader2, Zap } from "lucide-react";
 
-export default function LoginPage() {
+function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl") || "/home";
@@ -20,7 +20,6 @@ export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    // Force reset the animation flag whenever user lands on login page
     if (typeof window !== "undefined") {
       sessionStorage.removeItem("welcomeShown");
     }
@@ -41,7 +40,6 @@ export default function LoginPage() {
     } else {
       toast.success("Login successful!");
       
-      // Fetch session dynamically to see if the user is an admin
       const sessionRes = await fetch("/api/auth/session");
       const sessionData = await sessionRes.json();
       
@@ -105,7 +103,7 @@ export default function LoginPage() {
         >
           <div className="lg:hidden flex items-center gap-3 mb-8 justify-center">
              <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center shadow-xl shadow-blue-500/20">
-               <Lock className="w-6 h-6 text-white" />
+               <Zap className="w-6 h-6 text-white" />
              </div>
              <span className="text-xl font-black tracking-tight text-slate-900 dark:text-white uppercase tracking-tighter">IntelliQueue</span>
           </div>
@@ -166,5 +164,13 @@ export default function LoginPage() {
         </motion.div>
       </div>
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center bg-slate-950 text-white font-bold animate-pulse">Initializing Security...</div>}>
+      <LoginForm />
+    </Suspense>
   );
 }
