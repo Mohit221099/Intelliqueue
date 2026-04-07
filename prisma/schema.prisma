@@ -1,0 +1,116 @@
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum Role {
+  USER
+  ADMIN
+  SUPER_ADMIN
+}
+
+enum TokenStatus {
+  WAITING
+  SERVING
+  COMPLETED
+  SKIPPED
+  CANCELLED
+}
+
+model User {
+  id            String    @id @default(auto()) @map("_id") @db.ObjectId
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime?
+  image         String?
+  password      String?
+  role          Role      @default(USER)
+  phone         String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  
+  tokens        Token[]   @relation("UserTokens")
+  servicedTokens Token[]   @relation("AdminServicedTokens")
+  branchId      String?   @db.ObjectId
+  branch        Branch?   @relation(fields: [branchId], references: [id])
+}
+
+model Branch {
+  id            String    @id @default(auto()) @map("_id") @db.ObjectId
+  name          String
+  location      String
+  description   String?
+  workingHours  String?
+  queueLimit    Int       @default(100)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  
+  admins        User[]
+  services      Service[]
+  tokens        Token[]
+}
+
+model Service {
+  id            String    @id @default(auto()) @map("_id") @db.ObjectId
+  name          String
+  description   String?
+  avgDuration   Int       @default(15)
+  branchId      String    @db.ObjectId
+  branch        Branch    @relation(fields: [branchId], references: [id])
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  
+  tokens        Token[]
+}
+
+model Token {
+  id                 String      @id @default(auto()) @map("_id") @db.ObjectId
+  tokenNumber        String   
+  status             TokenStatus @default(WAITING)
+  priority           Boolean     @default(false)
+  
+  userId             String      @db.ObjectId
+  user               User        @relation("UserTokens", fields: [userId], references: [id])
+  
+  branchId           String      @db.ObjectId
+  branch             Branch      @relation(fields: [branchId], references: [id])
+  
+  serviceId          String      @db.ObjectId
+  service            Service     @relation(fields: [serviceId], references: [id])
+  
+  issuedAt           DateTime    @default(now())
+  estimatedServeTime DateTime?
+  servedAt           DateTime?
+  completedAt        DateTime?
+  
+  servicedById       String?     @db.ObjectId
+  servicedBy         User?       @relation("AdminServicedTokens", fields: [servicedById], references: [id])
+  
+  logs               ActivityLog[]
+  
+  @@index([branchId, status, priority])
+}
+
+model ActivityLog {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  tokenId     String   @db.ObjectId
+  token       Token    @relation(fields: [tokenId], references: [id])
+  branchId    String   @db.ObjectId
+  action      String   // e.g. "CALLED", "COMPLETED", "SKIPPED", "CANCELLED"
+  adminId     String   @db.ObjectId
+  adminName   String?
+  timestamp   DateTime @default(now())
+  details     String?  // e.g. "Next in queue" or "QR Scan Success"
+}
+
+model Notification {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId      String   @db.ObjectId
+  message     String
+  read        Boolean  @default(false)
+  createdAt   DateTime @default(now())
+}
