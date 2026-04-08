@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
-import { Users, Clock, Zap, Target, History as HistoryIcon, RefreshCw, Braille as Brain, TrendingUp, AlertTriangle, CheckCircle2, Lightbulb } from "lucide-react";
+import { Users, Clock, Zap, Target, History as HistoryIcon, RefreshCw, Brain, TrendingUp, AlertTriangle, CheckCircle2, Lightbulb } from "lucide-react";
 
 interface AnalyticsProps {
   totalServed: number;

@@ -5,7 +5,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { useSession } from "next-auth/react";
 import InitialLoader from "@/app/home/InitialLoader";
-import { ArrowRight, Zap, Braille as Brain, UtensilsCrossed, Landmark, HeartPulse, Activity, Check, Layers } from "lucide-react";
+import { ArrowRight, Zap, Brain, UtensilsCrossed, Landmark, HeartPulse, Activity, Check, Layers } from "lucide-react";
 
 const VERTICALS = [
   {
