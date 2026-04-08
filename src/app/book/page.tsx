@@ -137,7 +137,7 @@ export default async function BookPage() {
                           <Clock className="w-4 h-4" /> Servicing Hours
                         </span>
                         <span className="text-xs font-bold text-slate-700 dark:text-slate-300 font-mono tracking-tight bg-slate-200 dark:bg-white/10 px-2 py-1 rounded">
-                           {branch.workingHours ? JSON.parse(branch.workingHours).open + ' - ' + JSON.parse(branch.workingHours).close : '09:00 - 17:00'}
+                           {branch.workingHours || '09:00 - 17:00'}
                         </span>
                       </div>
                     </div>
