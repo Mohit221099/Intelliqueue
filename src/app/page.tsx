@@ -5,8 +5,76 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { useSession } from "next-auth/react";
 import InitialLoader from "@/app/home/InitialLoader";
-import LogoutButton from "@/app/home/LogoutButton";
-import { ArrowRight, Clock, Activity, ShieldCheck, Layers, Zap } from "lucide-react";
+import { ArrowRight, Zap, Braille as Brain, UtensilsCrossed, Landmark, HeartPulse, Activity, Check, Layers } from "lucide-react";
+
+const VERTICALS = [
+  {
+    icon: UtensilsCrossed,
+    color: "text-orange-500",
+    bg: "bg-orange-500/10",
+    border: "border-orange-500/20",
+    title: "College Canteens",
+    desc: "Pre-order meals from your phone. Walk in, pick up, walk out. No 30-minute queue at 1 PM.",
+    tag: "JIS College · Live Demo"
+  },
+  {
+    icon: Landmark,
+    color: "text-purple-500",
+    bg: "bg-purple-500/10",
+    border: "border-purple-500/20",
+    title: "Temples & Shrines",
+    desc: "Book a darshan slot in advance. Arrive at your window. Eliminate 6-hour waits at sacred sites.",
+    tag: "Tirupati · Dakshineswar"
+  },
+  {
+    icon: HeartPulse,
+    color: "text-rose-500",
+    bg: "bg-rose-500/10",
+    border: "border-rose-500/20",
+    title: "Local Clinics & OPD",
+    desc: "SMS-based queue booking. No app needed. Patients get a call when their turn is 10 minutes away.",
+    tag: "Works on basic phones"
+  },
+  {
+    icon: Activity,
+    color: "text-teal-500",
+    bg: "bg-teal-500/10",
+    border: "border-teal-500/20",
+    title: "Govt. Jan Seva Centres",
+    desc: "Digital India meets queue intelligence. Deployed at gram panchayats, RTO offices, ration shops.",
+    tag: "Digital India Ready"
+  }
+];
+
+const PLANS = [
+  {
+    name: "Free",
+    price: "₹0",
+    period: "/month",
+    desc: "For small canteens and pilot programs",
+    features: ["1 queue counter", "Up to 50 tokens/day", "QR code generation", "Basic dashboard"],
+    cta: "Get Started",
+    highlight: false,
+  },
+  {
+    name: "Starter",
+    price: "₹999",
+    period: "/month",
+    desc: "For colleges, cafeterias, and clinics",
+    features: ["5 queue counters", "Unlimited tokens", "SMS notifications", "Analytics & audit logs", "Mobile admin panel"],
+    cta: "Start Free Trial",
+    highlight: true,
+  },
+  {
+    name: "Growth",
+    price: "₹4,999",
+    period: "/month",
+    desc: "For temples, hospitals, enterprise",
+    features: ["Unlimited counters", "AI demand forecasting", "No-show auto-backfill", "Custom branding", "API access", "Priority support"],
+    cta: "Contact Sales",
+    highlight: false,
+  },
+];
 
 export default function Home() {
   const { data: session } = useSession();
@@ -15,145 +83,150 @@ export default function Home() {
     <>
       <InitialLoader />
       <div className="min-h-screen bg-slate-50 dark:bg-[#050505] text-slate-900 dark:text-slate-100 font-sans selection:bg-blue-500 selection:text-white relative overflow-x-hidden flex flex-col">
-        {/* Ambient Glows */}
+        {/* Ambient background glows */}
         <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
           <div className="absolute top-[-20%] left-[-10%] w-[60%] h-[60%] rounded-full bg-blue-500/10 dark:bg-blue-600/10 blur-[120px]" />
           <div className="absolute top-[20%] right-[-10%] w-[40%] h-[40%] rounded-full bg-indigo-500/10 dark:bg-indigo-600/10 blur-[120px]" />
-          <div className="absolute bottom-[-20%] left-[20%] w-[50%] h-[50%] rounded-full bg-blue-500/10 dark:bg-blue-400/5 blur-[120px]" />
-          <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.03] dark:opacity-[0.05] mix-blend-overlay" />
         </div>
-        
-        {/* Refined Navigation */}
-        <header className="relative z-20 w-full max-w-7xl mx-auto h-20 sm:h-24 flex items-center px-6 md:px-12 justify-between sticky top-0 bg-white/50 dark:bg-black/50 backdrop-blur-xl">
+
+        {/* Navigation */}
+        <header className="relative z-20 w-full max-w-7xl mx-auto h-20 flex items-center px-6 md:px-12 justify-between sticky top-0 bg-white/50 dark:bg-black/50 backdrop-blur-xl">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 flex items-center justify-center bg-blue-600 rounded-xl shadow-lg shadow-blue-500/30">
-               <Zap className="w-5 h-5 text-white" />
+            <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/30">
+              <Zap className="w-5 h-5 text-white" />
             </div>
-            <span className="font-black text-xl tracking-tighter text-slate-900 dark:text-white uppercase">
-              IntelliQueue
-            </span>
+            <span className="font-black text-xl tracking-tighter text-slate-900 dark:text-white uppercase">IntelliQueue</span>
           </div>
-          
           <div className="flex items-center gap-3">
-             {session ? (
-               <Link href="/home">
-                 <Button className="rounded-full bg-blue-600 hover:bg-blue-700 text-white shadow-lg shadow-blue-500/25 font-bold px-5 sm:px-6 h-10 sm:h-11 text-xs sm:text-sm">
-                   GO TO CONSOLE
-                 </Button>
-               </Link>
-             ) : (
-               <Link href="/login?callbackUrl=/book">
-                 <Button className="rounded-full bg-slate-900 hover:bg-slate-800 dark:bg-white dark:hover:bg-slate-100 dark:text-slate-900 text-white shadow-xl shadow-slate-900/10 dark:shadow-white/10 font-bold px-6 sm:px-8 h-10 sm:h-11 text-xs sm:text-sm transition-transform active:scale-95">
-                   JOIN NOW
-                 </Button>
-               </Link>
-             )}
+            {session ? (
+              <Link href="/home">
+                <Button className="rounded-full bg-blue-600 hover:bg-blue-700 text-white font-bold px-5 h-10 text-xs sm:text-sm shadow-lg shadow-blue-500/25">
+                  CONSOLE
+                </Button>
+              </Link>
+            ) : (
+              <>
+                <Link href="/login" className="hidden sm:block">
+                  <Button variant="ghost" className="font-bold text-sm">Sign In</Button>
+                </Link>
+                <Link href="/register">
+                  <Button className="rounded-full bg-slate-900 dark:bg-white dark:text-slate-900 text-white font-bold px-5 h-10 text-xs sm:text-sm transition-transform active:scale-95 shadow-xl">
+                    JOIN FREE
+                  </Button>
+                </Link>
+              </>
+            )}
           </div>
         </header>
 
-        <main className="relative z-10 flex-1 flex flex-col items-center pt-10 sm:pt-16 pb-24 px-6">
-          <motion.div 
+        <main className="relative z-10 flex-1 flex flex-col items-center px-6">
+          {/* Hero Section */}
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-            className="w-full max-w-4xl text-center flex flex-col items-center"
+            transition={{ duration: 0.8 }}
+            className="w-full max-w-4xl text-center flex flex-col items-center pt-12 sm:pt-20 pb-16 sm:pb-24"
           >
-            {/* Pill Badge */}
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/60 dark:bg-white/5 border border-slate-200/60 dark:border-white/10 shadow-sm mb-8 sm:mb-10 backdrop-blur-md">
-              <span className="flex h-2 w-2 rounded-full bg-blue-600 animate-pulse" />
-              <span className="text-[10px] sm:text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-widest">Enterprise Optimization</span>
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-orange-50 dark:bg-orange-500/10 border border-orange-200/60 dark:border-orange-500/20 shadow-sm mb-8 backdrop-blur-md">
+              <span className="flex h-2 w-2 rounded-full bg-orange-500 animate-pulse" />
+              <span className="text-[10px] sm:text-xs font-black text-orange-700 dark:text-orange-400 uppercase tracking-widest">Queue Intelligence for Every Indian</span>
             </div>
 
-            <h1 className="text-4xl sm:text-6xl md:text-[5rem] font-black tracking-tighter leading-[1.0] mb-6 sm:mb-8 text-slate-900 dark:text-white uppercase">
-              End the <br className="sm:hidden" /> <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-500">Wait.</span><br />
-              Elevate <br className="sm:hidden" /> Service.
+            <h1 className="text-5xl sm:text-7xl md:text-8xl font-black tracking-tighter leading-[0.9] mb-6 text-slate-900 dark:text-white uppercase">
+              Stop Waiting.<br />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-indigo-500 to-purple-600">Start Serving.</span>
             </h1>
 
-            <p className="text-sm sm:text-lg md:text-xl text-slate-600 dark:text-slate-400 mb-10 sm:mb-12 max-w-2xl leading-relaxed font-semibold">
-              IntelliQueue eliminates physical waiting lines through predictive real-time algorithms. Engineered for public sector efficiency and reliability.
+            <p className="text-sm sm:text-lg text-slate-600 dark:text-slate-400 mb-10 max-w-2xl leading-relaxed font-semibold">
+              IntelliQueue is the universal SaaS OS for undigitized queues. From <strong className="text-slate-800 dark:text-white">college canteens to ancient temples</strong>, we eliminate wait times using AI-powered flow intelligence.
             </p>
 
             <div className="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto">
-              {session ? (
-                <Link href="/book" className="w-full sm:w-auto">
-                   <Button size="lg" className="w-full sm:w-auto h-14 px-8 rounded-full bg-blue-600 hover:bg-blue-700 text-white shadow-xl shadow-blue-500/30 font-bold text-base transition-transform active:scale-95">
-                     START SESSION <ArrowRight className="ml-2 w-5 h-5" />
-                   </Button>
-                </Link>
-              ) : (
-                <Link href="/login?callbackUrl=/book" className="w-full sm:w-auto">
-                   <Button size="lg" className="w-full sm:w-auto h-14 px-8 rounded-full bg-slate-900 hover:bg-slate-800 dark:bg-white dark:hover:bg-slate-200 dark:text-slate-900 text-white shadow-xl shadow-slate-900/20 dark:shadow-white/20 font-bold text-base transition-transform active:scale-95">
-                     BOOK NOW <ArrowRight className="ml-2 w-5 h-5" />
-                   </Button>
-                </Link>
-              )}
+              <Link href={session ? "/book" : "/register"} className="w-full sm:w-auto">
+                <Button size="lg" className="w-full sm:w-auto h-14 px-10 rounded-full bg-blue-600 hover:bg-blue-700 text-white shadow-xl shadow-blue-500/30 font-black text-base transition-transform active:scale-95 uppercase">
+                  Launch Demo <ArrowRight className="ml-2 w-5 h-5" />
+                </Button>
+              </Link>
+              <Link href="#pricing" className="w-full sm:w-auto">
+                <Button size="lg" variant="outline" className="w-full sm:w-auto h-14 px-10 rounded-full font-black text-base uppercase border-2">
+                  Pricing
+                </Button>
+              </Link>
             </div>
           </motion.div>
 
-          {/* Bento Grid Features */}
-          <motion.div 
-            initial={{ opacity: 0, y: 40 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-            className="w-full max-w-5xl mt-32 grid grid-cols-1 md:grid-cols-3 gap-6"
-          >
-            {/* Card 1 */}
-            <div className="col-span-1 md:col-span-2 relative overflow-hidden rounded-[2rem] bg-white/50 dark:bg-[#111111]/80 backdrop-blur-xl border border-slate-200 dark:border-white/5 p-8 md:p-12 shadow-2xl shadow-slate-200/40 dark:shadow-none group transition-colors hover:border-blue-500/30">
-              <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500/20 rounded-full blur-3xl transform translate-x-1/2 -translate-y-1/2 group-hover:scale-110 transition-transform duration-700" />
-              <div className="relative z-10 w-full md:w-3/4">
-                 <div className="w-14 h-14 rounded-2xl bg-white dark:bg-blue-500/10 flex items-center justify-center mb-6 border border-slate-100 dark:border-blue-500/20 shadow-sm">
-                   <Activity className="w-7 h-7 text-blue-600 dark:text-blue-400" />
-                 </div>
-                 <h3 className="text-2xl font-bold mb-4 text-slate-900 dark:text-white tracking-tight">Predictive AI ETA</h3>
-                 <p className="text-slate-600 dark:text-slate-400 leading-relaxed font-medium">
-                   Our dynamic algorithm continuously analyzes branch performance and service times to give users precise arrival predictions. No more arriving early or waiting indefinitely.
-                 </p>
-              </div>
+          {/* Verticals Section */}
+          <section className="w-full max-w-6xl mb-24">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl sm:text-5xl font-black tracking-tighter uppercase mb-4">One Platform. Every Queue.</h2>
+              <p className="text-slate-500 font-semibold max-w-lg mx-auto">Digitizing the 10 Billion hours Indians waste in queues every year.</p>
             </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {VERTICALS.map((v, i) => (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.1 }}
+                  className={`p-6 rounded-[2rem] bg-white dark:bg-slate-900 border ${v.border} shadow-lg hover:-translate-y-2 transition-transform duration-300`}
+                >
+                  <div className={`w-12 h-12 rounded-2xl ${v.bg} flex items-center justify-center mb-4`}>
+                    <v.icon className={`w-6 h-6 ${v.color}`} />
+                  </div>
+                  <h3 className="font-black text-slate-900 dark:text-white text-xl tracking-tight mb-2 uppercase">{v.title}</h3>
+                  <p className="text-slate-500 text-sm leading-relaxed mb-4">{v.desc}</p>
+                  <span className={`text-[10px] font-black uppercase tracking-widest ${v.color} ${v.bg} px-3 py-1 rounded-full`}>{v.tag}</span>
+                </motion.div>
+              ))}
+            </div>
+          </section>
 
-            {/* Card 2 */}
-            <div className="col-span-1 relative overflow-hidden rounded-[2rem] bg-white/50 dark:bg-[#111111]/80 backdrop-blur-xl border border-slate-200 dark:border-white/5 p-8 shadow-2xl shadow-slate-200/40 dark:shadow-none group transition-colors hover:border-indigo-500/30">
-               <div className="absolute bottom-0 right-0 w-32 h-32 bg-indigo-500/20 rounded-full blur-2xl transform translate-x-8 translate-y-8 group-hover:scale-110 transition-transform duration-700" />
-               <div className="relative z-10">
-                 <div className="w-14 h-14 rounded-2xl bg-white dark:bg-indigo-500/10 flex items-center justify-center mb-6 border border-slate-100 dark:border-indigo-500/20 shadow-sm">
-                   <ShieldCheck className="w-7 h-7 text-indigo-600 dark:text-indigo-400" />
-                 </div>
-                 <h3 className="text-2xl font-bold mb-4 text-slate-900 dark:text-white tracking-tight">Secure Access</h3>
-                 <p className="text-slate-600 dark:text-slate-400 leading-relaxed font-medium">
-                   Enterprise-grade secure endpoints with QR code verification.
-                 </p>
-               </div>
+          {/* Pricing Section */}
+          <section id="pricing" className="w-full max-w-5xl mb-32">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl sm:text-5xl font-black tracking-tighter uppercase mb-4">SaaS Pricing</h2>
+              <p className="text-slate-500 font-semibold">Scaling from local kiosks to national shrines.</p>
             </div>
-
-            {/* Card 3 */}
-            <div className="col-span-1 relative overflow-hidden rounded-[2rem] bg-white/50 dark:bg-[#111111]/80 backdrop-blur-xl border border-slate-200 dark:border-white/5 p-8 shadow-2xl shadow-slate-200/40 dark:shadow-none group transition-colors hover:border-teal-500/30">
-               <div className="absolute top-0 right-0 w-32 h-32 bg-teal-500/20 rounded-full blur-2xl transform translate-x-8 -translate-y-8 group-hover:scale-110 transition-transform duration-700" />
-               <div className="relative z-10">
-                 <div className="w-14 h-14 rounded-2xl bg-white dark:bg-teal-500/10 flex items-center justify-center mb-6 border border-slate-100 dark:border-teal-500/20 shadow-sm">
-                   <Clock className="w-7 h-7 text-teal-600 dark:text-teal-400" />
-                 </div>
-                 <h3 className="text-2xl font-bold mb-4 text-slate-900 dark:text-white tracking-tight">Live Tracking</h3>
-                 <p className="text-slate-600 dark:text-slate-400 leading-relaxed font-medium">
-                   Real-time connections deliver split-second token status updates.
-                 </p>
-               </div>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
+              {PLANS.map((plan, i) => (
+                <div
+                  key={i}
+                  className={`p-8 rounded-[2.5rem] border-2 flex flex-col relative ${plan.highlight
+                    ? "bg-blue-600 border-blue-500 text-white shadow-2xl scale-105 z-10"
+                    : "bg-white dark:bg-slate-900 border-slate-100 dark:border-slate-800"
+                  }`}
+                >
+                  <p className={`text-xs font-black uppercase tracking-widest mb-2 ${plan.highlight ? "text-blue-200" : "text-slate-400"}`}>{plan.name}</p>
+                  <div className="flex items-baseline gap-1 mb-4">
+                    <span className="text-5xl font-black">{plan.price}</span>
+                    <span className={`text-sm font-bold ${plan.highlight ? "text-blue-200" : "text-slate-400"}`}>{plan.period}</span>
+                  </div>
+                  <ul className="space-y-4 mb-8 flex-1">
+                    {plan.features.map((f, j) => (
+                      <li key={j} className="flex items-center gap-3 text-sm font-semibold">
+                        <Check className={`w-5 h-5 ${plan.highlight ? "text-blue-300" : "text-green-500"}`} />
+                        {f}
+                      </li>
+                    ))}
+                  </ul>
+                  <Button className={`w-full rounded-2xl h-12 font-black uppercase tracking-widest ${plan.highlight
+                    ? "bg-white text-blue-600 hover:bg-blue-50"
+                    : "bg-slate-900 dark:bg-white text-white dark:text-slate-900"
+                  }`}>
+                    {plan.cta}
+                  </Button>
+                </div>
+              ))}
             </div>
-
-            {/* Card 4 */}
-            <div className="col-span-1 md:col-span-2 relative overflow-hidden rounded-[2rem] bg-white/50 dark:bg-[#111111]/80 backdrop-blur-xl border border-slate-200 dark:border-white/5 p-8 md:p-12 shadow-2xl shadow-slate-200/40 dark:shadow-none group transition-colors hover:border-purple-500/30">
-              <div className="absolute bottom-0 right-0 w-64 h-64 bg-purple-500/20 rounded-full blur-3xl transform translate-x-1/4 translate-y-1/4 group-hover:scale-110 transition-transform duration-700" />
-              <div className="relative z-10 w-full md:w-3/4">
-                 <div className="w-14 h-14 rounded-2xl bg-white dark:bg-purple-500/10 flex items-center justify-center mb-6 border border-slate-100 dark:border-purple-500/20 shadow-sm">
-                   <Layers className="w-7 h-7 text-purple-600 dark:text-purple-400" />
-                 </div>
-                 <h3 className="text-2xl font-bold mb-4 text-slate-900 dark:text-white tracking-tight">Systematic Restructuring</h3>
-                 <p className="text-slate-600 dark:text-slate-400 leading-relaxed font-medium">
-                   Automatically drops no-shows, balances VIP priorities, and optimizes service station workloads asynchronously to drastically optimize the flow.
-                 </p>
-              </div>
-            </div>
-          </motion.div>
+          </section>
         </main>
+
+        <footer className="relative z-10 border-t border-slate-200 dark:border-slate-800 py-12 px-6 text-center">
+          <p className="text-slate-400 text-xs font-bold uppercase tracking-widest">
+            © {new Date().getFullYear()} IntelliQueue · Universal Queue Intelligence · Built for India
+          </p>
+        </footer>
       </div>
     </>
   );
